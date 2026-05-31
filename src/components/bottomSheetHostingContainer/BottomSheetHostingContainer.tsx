@@ -97,6 +97,10 @@ function BottomSheetHostingContainerComponent({
         }
       );
 
+      // [chkdbg] container height tracking — keyboard-induced layout change diagnostic
+      // biome-ignore lint/suspicious/noConsole: diagnostic
+      console.log(`[chkdbg] hostingContainer onLayout height=${Math.round(height)}`);
+
       if (__DEV__) {
         print({
           component: 'BottomSheetHostingContainer',

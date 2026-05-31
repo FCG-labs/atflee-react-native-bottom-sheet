@@ -847,10 +847,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           keyboardBehavior === KEYBOARD_BEHAVIOR.interactive &&
           keyboardStatus === KEYBOARD_STATUS.SHOWN &&
           // ensure that this logic does not run on android
-          // with resize input mode
+          // with resize or pan input mode (OS handles keyboard avoidance natively)
           !(
             Platform.OS === 'android' &&
-            android_keyboardInputMode === 'adjustResize'
+            (android_keyboardInputMode === 'adjustResize' ||
+              android_keyboardInputMode === 'adjustPan')
           )
         ) {
           isInTemporaryPosition.value = true;
@@ -1691,7 +1692,8 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
          */
         if (
           Platform.OS === 'android' &&
-          android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize
+          (android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize ||
+            android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustPan)
         ) {
           heightWithinContainer = 0;
 
