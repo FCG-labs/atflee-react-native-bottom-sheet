@@ -849,15 +849,11 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
           keyboardStatus === KEYBOARD_STATUS.SHOWN &&
           // ensure that this logic does not run on android.
           // - adjustResize: OS resizes the view; we must skip interactive shift.
-          // - adjustPan: OS pan does not work on Android 15+ edge-to-edge,
-          //   but the original interactive shift causes sheet top to clamp
-          //   negative when (snapTop - keyboardHeight < 0), cropping the
-          //   sheet header. The host (ChecklistTab) compensates by
-          //   shrinking the inner list area instead.
+          // - adjustPan: bottom-sheet owns the keyboard offset, so interactive
+          //   shift must continue to keep TextInput sheets above the keyboard.
           !(
             Platform.OS === 'android' &&
-            (android_keyboardInputMode === 'adjustResize' ||
-              android_keyboardInputMode === 'adjustPan')
+            android_keyboardInputMode === 'adjustResize'
           )
         ) {
           isInTemporaryPosition.value = true;
@@ -1682,14 +1678,12 @@ const BottomSheetComponent = forwardRef<BottomSheet, BottomSheetProps>(
         }
 
         /**
-         * On Android, both resize and pan modes must zero out heightWithinContainer
-         * to avoid double-shifting the sheet position. See the comment above the
-         * interactive-shift block for the rationale (adjustPan + edge-to-edge).
+         * On Android resize mode, the OS already resizes the root view, so
+         * bottom-sheet must not apply the keyboard height a second time.
          */
         if (
           Platform.OS === 'android' &&
-          (android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize ||
-            android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustPan)
+          android_keyboardInputMode === KEYBOARD_INPUT_MODE.adjustResize
         ) {
           heightWithinContainer = 0;
 
