@@ -1,6 +1,6 @@
 {
   "name": "atflee-react-native-bottom-sheet",
-  "version": "5.2.9-atflee.3",
+  "version": "5.2.9-atflee.4",
   "description": "A performant interactive bottom sheet with fully configurable options 🚀",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -32,11 +32,14 @@
   "scripts": {
     "typescript": "tsc --skipLibCheck --noEmit",
     "lint": "biome lint --error-on-warnings ./src",
-    "build": "bob build && yarn copy-dts && yarn delete-dts.js && yarn delete-debug-view",
+    "clean": "rm -rf lib",
+    "build": "bob build && npm run copy-dts && npm run delete-dts && npm run delete-debug-view",
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" lib/typescript",
     "delete-debug-view": "rm -r ./lib/commonjs/components/bottomSheetDebugView && rm -r ./lib/module/components/bottomSheetDebugView && rm -r ./lib/typescript/components/bottomSheetDebugView",
-    "delete-dts.js": "find ./lib/commonjs -name '*.d.js*' -delete && find ./lib/module -name '*.d.js*' -delete",
-    "release": "rm -rf lib && yarn build && release-it",
+    "delete-dts": "find ./lib/commonjs -name '*.d.js*' -delete && find ./lib/module -name '*.d.js*' -delete",
+    "delete-dts.js": "npm run delete-dts",
+    "prepare": "npm run clean && npm run build",
+    "release": "npm run clean && npm run build && release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn install && yarn example"
   },
