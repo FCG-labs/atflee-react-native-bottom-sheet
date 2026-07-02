@@ -47,7 +47,11 @@ const BottomSheetBackdropComponent = ({
 }: BottomSheetDefaultBackdropProps) => {
   //#region hooks
   const { snapToIndex, close } = useBottomSheet();
-  const isMounted = useRef(false);
+  // mount 직후 useAnimatedReaction의 최초 콜백이 이 useEffect보다 먼저 실행되면
+  // isMounted.current가 아직 false라 setPointerEvents가 스킵되고 pointerEvents='auto'로
+  // 영구 고착돼(index가 다시 바뀌기 전까지) 화면 전체 탭이 막힌다. 초기값을 true로 두어
+  // "mount 이전" 레이스 자체를 제거한다 — unmount 안전장치(false 전환)는 그대로 유지.
+  const isMounted = useRef(true);
   //#endregion
 
   //#region defaults
@@ -133,7 +137,6 @@ const BottomSheetBackdropComponent = ({
   // addressing updating the state after unmounting.
   // [link](https://github.com/gorhom/react-native-bottom-sheet/issues/1376)
   useEffect(() => {
-    isMounted.current = true;
     return () => {
       isMounted.current = false;
     };

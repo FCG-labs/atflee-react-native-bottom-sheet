@@ -1,6 +1,6 @@
 {
   "name": "atflee-react-native-bottom-sheet",
-  "version": "5.2.9-atflee.4",
+  "version": "5.2.9-atflee.5",
   "description": "A performant interactive bottom sheet with fully configurable options 🚀",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
