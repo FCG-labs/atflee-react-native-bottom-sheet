@@ -162,7 +162,12 @@ const BottomSheetBackdropComponent = ({
     </Animated.View>
   );
 
-  return pressBehavior !== 'none' ? (
+  // pointerEvents==='none'일 때도 GestureDetector가 native gesture recognizer를 계속
+  // 설치해두면, RNGH의 히트테스트가 RN pointerEvents 상태와 무관하게 탭을 claim할 수
+  // 있다(팀 문서 "원인 3: Overlay Hit-Test 차단" 패턴 — onTouchStart조차 안 찍히는
+  // 증상과 일치). 비활성 상태에서는 GestureDetector 자체를 렌더하지 않아 native
+  // recognizer가 아예 설치되지 않도록 한다.
+  return pressBehavior !== 'none' && pointerEvents !== 'none' ? (
     <GestureDetector gesture={tapHandler}>{AnimatedView}</GestureDetector>
   ) : (
     AnimatedView
