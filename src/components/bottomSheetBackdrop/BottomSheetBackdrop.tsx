@@ -119,8 +119,13 @@ const BottomSheetBackdropComponent = ({
   //#endregion
 
   //#region effects
+  // reanimated 4: 스프링/타이밍 정착값이 목표에 정확히 스냅되지 않아(-1 대신
+  // -0.9999999720…) 강비교 `<= disappearsOnIndex`가 닫힘 상태에서 영구 false가 된다.
+  // 그러면 닫힌 시트의 백드롭 pointerEvents가 'auto'로 고착되어 보이지 않는 전체화면
+  // 뷰가 앱 전체 터치를 흡수한다(2026-07 RN 0.86 마이그레이션 터치 먹통 근본원인).
+  // 스냅 인덱스는 정수 간격이므로 1e-3 완충은 실제 전이 판정과 충돌하지 않는다.
   useAnimatedReaction(
-    () => animatedIndex.value <= disappearsOnIndex,
+    () => animatedIndex.value <= disappearsOnIndex + 1e-3,
     (shouldDisableTouchability, previous) => {
       if (shouldDisableTouchability === previous) {
         return;
