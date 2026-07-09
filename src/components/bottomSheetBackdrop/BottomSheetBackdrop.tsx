@@ -120,7 +120,10 @@ const BottomSheetBackdropComponent = ({
 
   //#region effects
   useAnimatedReaction(
-    () => animatedIndex.value <= disappearsOnIndex,
+    // reanimated 4: 정착값이 목표에 스냅되지 않아(-1 대신 -0.9999999720…) 강비교가
+    // 닫힘에서 영구 false → 백드롭 pointerEvents 'auto' 고착 → 전체화면 터치 흡수.
+    // 엡실론 완충(스냅 인덱스는 정수 간격이라 전이 판정과 충돌 없음).
+    () => animatedIndex.value <= disappearsOnIndex + 1e-3,
     (shouldDisableTouchability, previous) => {
       if (shouldDisableTouchability === previous) {
         return;
